@@ -1,5 +1,12 @@
 var test = require('tape')
-var html = require('../../')
+if (typeof window !== 'undefined') {
+  var document = window.document
+  var html = require('../../')
+} else {
+  var nano = require('./html')
+  document = nano.document
+  html = nano.html
+}
 
 test('multiple elements', function (t) {
   var multiple = html`<li>Hamburg</li><li>Helsinki</li>haha<li>Berlin<div>test</div></li>`
@@ -23,5 +30,20 @@ test('nested fragments', function (t) {
   t.equals(fragments.children.length, 4)
   t.equals(fragments.childNodes[4].textContent, 'between')
   t.equals(fragments.childNodes.length, 7)
+  t.end()
+})
+
+test('multiple elements mixed with array', function (t) {
+  var arr = [html`<li>Helsinki</li>`, null, html`<li>Stockholm</li>`]
+  var multiple = html`<li>Hamburg</li>${arr}<li>Berlin</li>`
+
+  var list = document.createElement('ul')
+  list.appendChild(multiple)
+  t.equal(list.children.length, 4, '4 children')
+  t.equal(list.children[0].tagName, 'LI', 'list tag name')
+  t.equal(list.children[0].textContent, 'Hamburg')
+  t.equal(list.children[1].textContent, 'Helsinki')
+  t.equal(list.children[2].textContent, 'Stockholm')
+  t.equal(list.children[3].textContent, 'Berlin')
   t.end()
 })

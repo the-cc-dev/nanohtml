@@ -2,11 +2,12 @@
   "name": "nanohtml",
   "description": "HTML template strings for the Browser with support for Server Side Rendering in Node.",
   "repository": "choojs/nanohtml",
-  "version": "1.5.0",
+  "version": "1.9.0",
   "main": "index.js",
   "files": [
     "index.js",
     "raw.js",
+    "dom.js",
     "lib",
     "types",
     "dist"
@@ -16,13 +17,15 @@
     "bench": "node bench/server.js && browserify bench/client.js | tape-run",
     "build": "mkdir -p dist/ && browserify index -s html -p bundle-collapser/plugin > dist/bundle.js && browserify index -p tinyify > dist/bundle.min.js && cat dist/bundle.min.js | gzip --best --stdout | wc -c | pretty-bytes",
     "prepublishOnly": "npm run build",
-    "test": "standard && node tests && npm run test:browser && npm run test:transform-browser && npm run test:babel-browser",
+    "test": "npm run test:standard && npm run test:node && npm run test:browser && npm run test:transform-browser && npm run test:babel-browser",
+    "test:standard": "standard",
+    "test:node": "node tests",
     "test:browser": "browserify tests/browser | tape-run",
     "test:transform-browser": "node tests/transform/build | tape-run",
     "test:babel-browser": "node tests/babel/build | tape-run"
   },
   "dependencies": {
-    "acorn": "^6.0.4",
+    "acorn-node": "^1.8.2",
     "camel-case": "^3.0.0",
     "convert-source-map": "^1.5.1",
     "estree-is-member-expression": "^1.0.0",
@@ -44,10 +47,11 @@
     "bubleify": "^1.2.0",
     "bundle-collapser": "^1.3.0",
     "choo": "^6.9.0",
+    "jsdom": "^15.2.0",
     "pify": "^3.0.0",
     "standard": "^10.0.3",
     "tape": "^4.8.0",
-    "tape-run": "^3.0.4",
+    "tape-run": "^6.0.0",
     "tinyify": "^2.4.0"
   },
   "keywords": [

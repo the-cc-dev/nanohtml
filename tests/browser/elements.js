@@ -1,5 +1,12 @@
 var test = require('tape')
-var html = require('../../')
+if (typeof window !== 'undefined') {
+  var document = window.document
+  var html = require('../../')
+} else {
+  var nano = require('./html')
+  document = nano.document
+  html = nano.html
+}
 
 test('create inputs', function (t) {
   t.plan(7)
@@ -153,6 +160,31 @@ test('space between text and non-text nodes', function (t) {
     </p>
   `
   t.equal(result.outerHTML, '<p><dfn>whitespace</dfn> is empty</p>', 'should have correct output')
+  t.end()
+})
+
+test('space between text followed by non-text nodes', function (t) {
+  t.plan(1)
+  var result = html`
+    <p>
+      whitespace
+      <strong>is strong</strong>
+    </p>
+  `
+  t.equal(result.outerHTML, '<p>whitespace <strong>is strong</strong></p>', 'should have correct output')
+  t.end()
+})
+
+test('space around text surrounded by non-text nodes', function (t) {
+  t.plan(1)
+  var result = html`
+    <p>
+      <strong>I agree</strong>
+      whitespace
+      <strong>is strong</strong>
+    </p>
+  `
+  t.equal(result.outerHTML, '<p><strong>I agree</strong> whitespace <strong>is strong</strong></p>', 'should have correct output')
   t.end()
 })
 
